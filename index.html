@@ -10,7 +10,7 @@
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
-    <title>Diwakar | Gemini  </title>
+    <title>www.NovaMind.io</title>
 </head>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
@@ -525,7 +525,7 @@ blockquote{
 <body>
 
     <nav class="navbar">
-        <h3 class="navbar__logo">Diwakar's Gemini</h3>
+        <h3 class="navbar__logo">Diwakar's NovaMind</h3>
         <button class="navbar__button" id="themeToggler"><i class='bx bx-sun'></i></button>
     </nav>
 
@@ -587,7 +587,7 @@ blockquote{
 
         </form>
         <p class="prompt__disclaim">
-            Gemini may display inaccurate info, including about people, so double-check its responses.
+            NovaMind may display inaccurate info, including about people, so double-check its responses.
              Designed by Diwakar Tiwari. Contact :- 7607827072 
         </p>
         
@@ -597,7 +597,7 @@ blockquote{
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-   <script>
+<script>
 const messageForm = document.querySelector(".prompt__form");
 const chatHistoryContainer = document.querySelector(".chats");
 const suggestionItems = document.querySelectorAll(".suggests__item");
@@ -613,61 +613,17 @@ let isGeneratingResponse = false;
 const GOOGLE_API_KEY = "AIzaSyARM1i-sr5M91_ZqdvJTkdKJPfuIK4BnlA";
 const API_REQUEST_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`;
 
-// Load saved data from local storage
-const loadSavedChatHistory = () => {
-    const savedConversations = JSON.parse(localStorage.getItem("saved-api-chats")) || [];
-    const isLightTheme = localStorage.getItem("themeColor") === "light_mode";
-
-    document.body.classList.toggle("light_mode", isLightTheme);
-    themeToggleButton.innerHTML = isLightTheme ? '<i class="bx bx-moon"></i>' : '<i class="bx bx-sun"></i>';
-
-    chatHistoryContainer.innerHTML = '';
-
-    savedConversations.forEach(conversation => {
-        const userMessageHtml = `
-            <div class="message__content">
-                <img class="message__avatar" src="assets/profile.png" alt="User avatar">
-               <p class="message__text">${conversation.userMessage}</p>
-            </div>
-        `;
-
-        const outgoingMessageElement = createChatMessageElement(userMessageHtml, "message--outgoing");
-        chatHistoryContainer.appendChild(outgoingMessageElement);
-
-        const responseText = conversation.apiResponse?.candidates?.[0]?.content?.parts?.[0]?.text;
-        const parsedApiResponse = marked.parse(responseText);
-        const rawApiResponse = responseText;
-
-        const responseHtml = `
-           <div class="message__content">
-                <img class="message__avatar" src="assets/gemini.svg" alt="Gemini avatar">
-                <p class="message__text"></p>
-                <div class="message__loading-indicator hide">
-                    <div class="message__loading-bar"></div>
-                    <div class="message__loading-bar"></div>
-                    <div class="message__loading-bar"></div>
-                </div>
-            </div>
-            <span onClick="copyMessageToClipboard(this)" class="message__icon hide"><i class='bx bx-copy-alt'></i></span>
-        `;
-
-        const incomingMessageElement = createChatMessageElement(responseHtml, "message--incoming");
-        chatHistoryContainer.appendChild(incomingMessageElement);
-
-        const messageTextElement = incomingMessageElement.querySelector(".message__text");
-
-        showTypingEffect(rawApiResponse, parsedApiResponse, messageTextElement, incomingMessageElement, true);
-    });
-
-    document.body.classList.toggle("hide-header", savedConversations.length > 0);
-};
+// Theme toggle
+const isLightTheme = localStorage.getItem("themeColor") === "light_mode";
+document.body.classList.toggle("light_mode", isLightTheme);
+themeToggleButton.innerHTML = isLightTheme ? '<i class="bx bx-moon"></i>' : '<i class="bx bx-sun"></i>';
 
 const createChatMessageElement = (htmlContent, ...cssClasses) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", ...cssClasses);
     messageElement.innerHTML = htmlContent;
     return messageElement;
-}
+};
 
 const showTypingEffect = (rawText, htmlText, messageElement, incomingMessageElement, skipEffect = false) => {
     const copyIconElement = incomingMessageElement.querySelector(".message__icon");
@@ -720,13 +676,6 @@ const requestApiResponse = async (incomingMessageElement) => {
         const rawApiResponse = responseText;
 
         showTypingEffect(rawApiResponse, parsedApiResponse, messageTextElement, incomingMessageElement);
-
-        let savedConversations = JSON.parse(localStorage.getItem("saved-api-chats")) || [];
-        savedConversations.push({
-            userMessage: currentUserMessage,
-            apiResponse: responseData
-        });
-        localStorage.setItem("saved-api-chats", JSON.stringify(savedConversations));
     } catch (error) {
         isGeneratingResponse = false;
         messageTextElement.innerText = error.message;
@@ -786,7 +735,6 @@ const displayLoadingAnimation = () => {
 
 const copyMessageToClipboard = (copyButton) => {
     const messageContent = copyButton.parentElement.querySelector(".message__text").innerText;
-
     navigator.clipboard.writeText(messageContent);
     copyButton.innerHTML = `<i class='bx bx-check'></i>`;
     setTimeout(() => copyButton.innerHTML = `<i class='bx bx-copy-alt'></i>`, 1000);
@@ -821,12 +769,10 @@ themeToggleButton.addEventListener('click', () => {
 });
 
 clearChatButton.addEventListener('click', () => {
-    if (confirm("Are you sure you want to delete all chat history?")) {
-        localStorage.removeItem("saved-api-chats");
-        loadSavedChatHistory();
-        currentUserMessage = null;
-        isGeneratingResponse = false;
-    }
+    chatHistoryContainer.innerHTML = '';
+    currentUserMessage = null;
+    isGeneratingResponse = false;
+    document.body.classList.remove("hide-header");
 });
 
 suggestionItems.forEach(suggestion => {
@@ -840,12 +786,8 @@ messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
     handleOutgoingMessage();
 });
-
-loadSavedChatHistory();
-
-chatHistoryContainer.lastElementChild.scrollIntoView({ behavior: "smooth" });
-
-</script> 
+</script>
+ 
 
 </body>
 
