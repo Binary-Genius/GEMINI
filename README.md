@@ -1,1 +1,1 @@
-# GEMINI
+# NovaMind.io
